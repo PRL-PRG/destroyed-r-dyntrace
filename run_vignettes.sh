@@ -11,13 +11,17 @@ export R_KEEP_PKG_SOURCE=yes
 
 COMPILE_VIGNETTE=false
 
-PACKAGES=
+OUTPUT_DIR="/data/kondziu/compiled/`date '+%F'`/"
+ARGS="--tmp-dir=$OUTPUT_DIR --output-dir=$OUTPUT_DIR"
 
 if $COMPILE_VIGNETTE
 then 
-    CMD="$CMD --compile"        
+    ARGS="$ARGS --compile"        
 fi    
 
+mkdir -p "$OUTPUT_DIR"
+
+PACKAGES=
 
 if [ $# -ge 1 ]
 then
@@ -35,7 +39,7 @@ do
     echo "$CMD $i"
     #valgrind --tool=memcheck --leak-check=full --show-reachable=yes \
     #rr record \
-    $CMD $i 2>&1 | tee "$i.log" 
+    $CMD $ARGS $i 2>&1 | tee "$i.log" 
     echo "$i" >> packages_done
 done   
 
