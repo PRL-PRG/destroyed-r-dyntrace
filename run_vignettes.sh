@@ -10,7 +10,7 @@ export R_DISABLE_BYTECODE=1
 export R_ENABLE_JIT=0
 export R_KEEP_PKG_SOURCE=yes
 
-OUTPUT_DIR="/data/kondziu/compiled/`date '+%F'`/"
+OUTPUT_DIR="/data/kondziu/uncompiled/`date '+%F'`/"
 ARGS="--tmp-dir=$OUTPUT_DIR --output-dir=$OUTPUT_DIR"
 
 COMPILE_VIGNETTE=false
