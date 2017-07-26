@@ -10,6 +10,18 @@ export R_DISABLE_BYTECODE=1
 export R_ENABLE_JIT=0
 export R_KEEP_PKG_SOURCE=yes
 
+OUTPUT_DIR="/data/kondziu/compiled/`date '+%F'`/"
+ARGS="--tmp-dir=$OUTPUT_DIR --output-dir=$OUTPUT_DIR"
+
+COMPILE_VIGNETTE=false
+
+if $COMPILE_VIGNETTE
+then 
+    ARGS="$ARGS --compile"   
+fi    
+
+mkdir -p "$OUTPUT_DIR"
+
 PACKAGES=
 
 if [ $# -ge 1 ]
@@ -26,7 +38,7 @@ echo > packages_done
 for i in $PACKAGES
 do 
     echo "$CMD $i"
-    time $CMD $i 2>&1 | tee "$i.log" 
+    time $CMD $ARGS $i 2>&1 | tee "$i.log" 
     echo "$i" >> packages_done
 done   
 
