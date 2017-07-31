@@ -3,26 +3,22 @@
 #CMD='bin/Rscript rdt-plugins/promises/R/benchmark.R'
 #CMD='bin/Rscript compose_testable_vignettes.R'
 #CMD='bin/R --slave --no-restore --debugger=gdb --file=compose_testable_vignettes.R --args'
-CMD='bin/R --slave --no-restore --file=compose_testable_vignettes.R --args'
+CMD='bin/R --slave --no-restore --file=sanity-check.R --args'
 
-export R_COMPILE_PKGS=0
-export R_DISABLE_BYTECODE=1
+export R_COMPILE_PKGS=1
+export R_DISABLE_BYTECODE=0
 export R_ENABLE_JIT=0
 export R_KEEP_PKG_SOURCE=yes
 
-export RDT_COMPILE_VIGNETTE=false
-
-OUTPUT_DIR="/data/kondziu/uncompiled/`date '+%F'`/"
-ARGS="--tmp-dir=$OUTPUT_DIR --output-dir=$OUTPUT_DIR"
-
-if $RDT_COMPILE_VIGNETTE
-then 
-    ARGS="$ARGS --compile"   
-fi    
-
-mkdir -p "$OUTPUT_DIR"
+COMPILE_VIGNETTE=false
 
 PACKAGES=
+
+if $COMPILE_VIGNETTE
+then 
+    CMD="$CMD --compile"        
+fi    
+
 
 if [ $# -ge 1 ]
 then
@@ -38,7 +34,7 @@ echo > packages_done
 for i in $PACKAGES
 do 
     echo "$CMD $i"
-    time $CMD $ARGS $i 2>&1 | tee "$i.log" 
+    time $CMD $i 2>&1 | tee "$i.log" 
     echo "$i" >> packages_done
 done   
 
