@@ -29,8 +29,8 @@ install_my_packages <- function(packages, src, installer=install.packages) {
             next
         }
     
-        write(paste("Instaling:", package, "(CRAN)"), stderr())
-        installer(package)
+        write(paste("  instaling", package), stderr())
+        installer(package, type="source", INSTALL_opts="--byte-compile", dependencies=TRUE)
     }
 }
 
@@ -150,6 +150,6 @@ eval_all_vignettes_from_package <- function(package) {
 
 for (package in packages$package) { 
     eval_all_vignettes_from_package(package) 
-    #:readline(prompt="Press [enter] to continue")
+    readline(prompt="Press [enter] to continue")
 }
 
