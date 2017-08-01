@@ -29,8 +29,7 @@ install_my_packages <- function(packages, src, installer=install.packages) {
             next
         }
     
-        write(paste("  instaling", package), stderr())
-        installer(package, type="source", INSTALL_opts="--byte-compile", dependencies=TRUE)
+        installer(package, type="sources", INSTALL_opts="--byte-compile", dependencies=TRUE)
     }
 }
 
