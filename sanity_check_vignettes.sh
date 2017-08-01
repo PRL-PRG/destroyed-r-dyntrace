@@ -36,5 +36,6 @@ do
     echo "$CMD $i"
     time $CMD $i 2>&1 | tee "$i.log" 
     echo "$i" >> packages_done
+    read any_key
 done   
 
