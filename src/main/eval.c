@@ -4809,12 +4809,12 @@ static R_INLINE SEXP FORCE_PROMISE(SEXP value, SEXP symbol, SEXP rho,
         if (keepmiss && R_isMissing(symbol, rho)) {
             value = R_MissingArg;
         } else {
-            if (i == 4) {
+            if (i == 2) {
                 RDT_HOOK(probe_force_promise_entry, symbol, rho); // FIXME NOT OK
             }
 
-            value = forcePromise(value);
-            if (i == 4) {
+            value = forcePromise(value); // TRY PROTECTING
+            if (i == 2) {
                 RDT_HOOK(probe_force_promise_exit, symbol, rho, value);
             }
         }
