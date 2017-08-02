@@ -1,4 +1,4 @@
-export(cmpfun,cmpfile,loadcmp,compile,disassemble)
+export(cmpfun,cmpfile,loadcmp,compile,disassemble,bcinfo)
 export(enableJIT,compilePKGS)
 export(getCompilerOption,setCompilerOptions)
 
