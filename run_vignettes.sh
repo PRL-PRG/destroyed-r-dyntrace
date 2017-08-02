@@ -11,7 +11,7 @@ export R_KEEP_PKG_SOURCE=yes
 
 export RDT_COMPILE_VIGNETTE=true
 
-OUTPUT_DIR="/data/kondziu/compiled/`date '+%F'`/"
+OUTPUT_DIR="/home/siekkonr/workspace/R-dyntrace-compiled/data/`date '+%F'`/"
 ARGS="--tmp-dir=$OUTPUT_DIR --output-dir=$OUTPUT_DIR"
 
 if $RDT_COMPILE_VIGNETTE
