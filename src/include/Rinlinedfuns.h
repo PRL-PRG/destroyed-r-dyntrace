@@ -351,6 +351,14 @@ INLINE_FUN SEXP lang6(SEXP s, SEXP t, SEXP u, SEXP v, SEXP w, SEXP x)
     return s;
 }
 
+INLINE_FUN SEXP lang7(SEXP s, SEXP t, SEXP u, SEXP v, SEXP w, SEXP x, SEXP y)
+{
+    PROTECT(s);
+    s = LCONS(s, list6(t, u, v, w, x, y));
+    UNPROTECT(1);
+    return s;
+}
+
 /* from util.c */
 
 /* Check to see if the arrays "x" and "y" have the identical extents */

@@ -7775,3 +7775,48 @@ SEXP R_ParseEvalString(const char *str, SEXP env)
     UNPROTECT(2); /* s, ps */
     return val;
 }
+
+static void loadNamespace(const char *name) {
+    SEXP fun, arg, expr;
+
+    PROTECT(fun = install("getNamespace"));
+    PROTECT(arg = mkString(name));
+    PROTECT(expr = lang2(fun, arg));
+    eval(expr, R_GlobalEnv);
+    UNPROTECT(3);
+}
+
+void printCurrentBCbody(SEXP body) {
+    SEXP compilersym, disasmsym, quotesym, bctoolssym, printdisasmsym;
+    SEXP prefixstr, one, zero, instexpr;
+    SEXP qexpr, disasmcall, fcall, fcall2;
+
+    PROTECT(bctoolssym = install("bctools"));
+    PROTECT(compilersym = install("compiler"));
+    PROTECT(disasmsym = install("disassemble"));
+    PROTECT(printdisasmsym = install("print"));
+    PROTECT(quotesym = install("quote"));
+
+    PROTECT(fcall = lang3(R_TripleColonSymbol, compilersym, disasmsym));
+    PROTECT(qexpr = lang2(quotesym, isNull(body) ? R_BCbody : body));
+    PROTECT(disasmcall = lang2(fcall, qexpr));
+    PROTECT(prefixstr = mkString("        "));
+    PROTECT(one = ScalarInteger(1));
+    PROTECT(zero = ScalarInteger(0));
+    //current evaluating instruction if body equals to NULL
+    PROTECT(instexpr = isNull(body) ? ScalarInteger((*(BCODE **) R_BCpc)
+                                                    - BCCODE(R_BCbody)) : R_NilValue);
+    /* equivalent to print( compiler::disassemble(quote(call)),
+       prefix, verbose = 1, maxdepth = 0, curdepth = 0, select = inst) ) */
+    PROTECT(fcall2 = lang7(printdisasmsym, disasmcall, prefixstr, one,
+                           zero, zero, instexpr));
+    eval(fcall2, R_GlobalEnv);
+    UNPROTECT(13);
+}
+
+void printBCStatus() {
+    loadNamespace("compiler");
+    loadNamespace("bctools");
+    Rprintf("     --- Evaluating bytecode --- \n");
+    printCurrentBCbody(R_NilValue);
+}

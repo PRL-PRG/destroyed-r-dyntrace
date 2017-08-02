@@ -1285,6 +1285,7 @@ void R_orderVector1(int *indx, int n, SEXP x,       Rboolean nalast, Rboolean de
 #define lang4			Rf_lang4
 #define lang5			Rf_lang5
 #define lang6			Rf_lang6
+#define lang7			Rf_lang7
 #define lastElt			Rf_lastElt
 #define lazy_duplicate		Rf_lazy_duplicate
 #define lcons			Rf_lcons
@@ -1394,6 +1395,7 @@ SEXP	 Rf_lang3(SEXP, SEXP, SEXP);
 SEXP	 Rf_lang4(SEXP, SEXP, SEXP, SEXP);
 SEXP	 Rf_lang5(SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP	 Rf_lang6(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+SEXP	 Rf_lang7(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 SEXP	 Rf_lastElt(SEXP);
 SEXP	 Rf_lcons(SEXP, SEXP);
 R_len_t  Rf_length(SEXP);
