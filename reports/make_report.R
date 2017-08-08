@@ -28,7 +28,7 @@ option_list <- list(
               help="compile Rmd files [default]", metavar="compile"),
   make_option(c("--engine"), action="store", default="/home/kondziu/workspace/R-dyntrace/reports/functions.R",
               help="path to functions.R file [default]", metavar="engine"),
-  make_option(c("--template"), action="store", default="/home/kondziu/workspace/R-dyntrace/reports/template.Rmd",
+  make_option(c("--template"), action="store", default="/home/kondziu/workspace/R-dyntrace-compiled-from-scratch/reports/template.Rmd",
               help="path to an Rmd template file [default]", metavar="template")
 )
 

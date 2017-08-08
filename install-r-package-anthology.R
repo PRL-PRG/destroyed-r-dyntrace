@@ -29,7 +29,7 @@ install_my_packages <- function(packages, src, installer=install.packages) {
             next
         }
     
-        installer(package, type="sources", INSTALL_opts="--byte-compile", dependencies=TRUE)
+        installer(package, INSTALL_opts="--byte-compile", dependencies=TRUE)
     }
 }
 
@@ -148,8 +148,8 @@ eval_all_vignettes_from_package <- function(package) {
 }
 
 
-for (package in packages$package) { 
-    eval_all_vignettes_from_package(package) 
-    readline(prompt="Press [enter] to continue")
-}
+#for (package in packages$package) { 
+#    eval_all_vignettes_from_package(package) 
+#    readline(prompt="Press [enter] to continue")
+#}
 
