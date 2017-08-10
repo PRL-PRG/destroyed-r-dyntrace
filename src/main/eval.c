@@ -1559,7 +1559,7 @@ SEXP applyClosure(SEXP call, SEXP op, SEXP arglist, SEXP rho, SEXP suppliedvars)
     a = actuals;
     while (f != R_NilValue) {
 	if (CAR(a) == R_MissingArg && CAR(f) != R_MissingArg) {
-	    SETCAR(a, mkPROMISE(CAR(f), newrho));
+	    SETCAR(a, mkPROMISE(CAR(f), newrho)); // FIXME distinguish these
 	    SET_MISSING(a, 2);
 	}
 	f = CDR(f);

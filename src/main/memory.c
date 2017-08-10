@@ -965,6 +965,7 @@ static void TryToReleasePages(void)
 #endif
 		    }
 #ifdef ENABLE_RDT
+            // FIXME subsumed by other hook
             else {
                 if (TYPEOF(s) == PROMSXP) {
                     RDT_HOOK(probe_gc_promise_unmarked, s);
@@ -1753,6 +1754,18 @@ static void RunGenCollect(R_size_t size_needed)
     }
     FORWARD_NODE(R_StringHash);
     PROCESS_NODES();
+
+#ifdef ENABLE_RDT
+    while (s != R_GenHeap[0].New) {
+        SEXP next = NEXT_NODE(s);
+        if (TYPEOF(s) != FREESXP) {
+            RDT_HOOK(probe_gc_promise_unmarked, s); // object unmarked not just promise
+            TYPEOF(s) = FREESXP;
+        }
+        s = next;
+    }
+#endif
+
 
 #ifdef PROTECTCHECK
     for(i=0; i< NUM_SMALL_NODE_CLASSES;i++){
