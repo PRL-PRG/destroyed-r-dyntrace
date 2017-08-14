@@ -122,6 +122,18 @@ namespace sql_generator {
         return statement.str();
     }
 
+    sql_stmt_t make_insert_promise_return_statement(sql_val_t return_type, sql_val_t promise_id, sql_val_t clock) {
+        stringstream statement;
+
+        statement << "insert into promise_returns values ("
+                  << return_type << ","
+                  << promise_id << ","
+                  << clock
+                  << ");\n";
+
+        return statement.str();
+    }
+
     sql_stmt_t make_insert_promise_lifecycle_statement(sql_val_t promise_id,
                                                        sql_val_t event,
                                                        sql_val_t gc_trigger_counter) {
@@ -326,8 +338,24 @@ namespace sql_generator {
                ");\n";
     }
 
+
+    // Whenever we evaluate a promise, we add the information about it here. I add two foreign keys for
+    // convenience, at the expense of disk space.
+    sql_stmt_t make_create_promise_returns_statement() {
+        return "create table if not exists promise_returns (\n"
+                "--[ data ]-----------------------------------------------------------------\n"
+                "type integer not null, \n"
+                "--[ relations ]------------------------------------------------------------\n"
+                "promise_id integer not null,\n"
+                "clock integer not null,\n"
+                "--[ keys ]-----------------------------------------------------------------\n"
+                "foreign key (promise_id) references promises,\n"
+                "foreign key (clock) references promise_evaluations\n"
+                ");\n";
+    }
+
     sql_stmt_t make_create_promise_lifecycle_statement() {
-        return "create table if not exists promise_lifecycle (\n"
+        return "create table if not exists promise_lifecycle (\n" // TODO should be plural
                "--[ relation ]--------------------------------------------------------------\n"
                 "promise_id integer not null,\n"
                 "--[ data ]-----------------------------------------------------------------\n"
@@ -340,7 +368,7 @@ namespace sql_generator {
     }
 
     sql_stmt_t make_create_gc_trigger_statement() {
-       return "create table if not exists gc_trigger (\n"
+       return "create table if not exists gc_trigger (\n" // TODO should be plural
               "--[ identity ]-------------------------------------------------------------\n"
               "counter integer primary key,\n"
               "--[ data ]-----------------------------------------------------------------\n"
@@ -350,7 +378,7 @@ namespace sql_generator {
     }
 
     sql_stmt_t make_create_type_distribution_statement() {
-      return "create table if not exists type_distribution (\n"
+      return "create table if not exists type_distribution (\n" // TODO should be plural
              "--[ relation ]-------------------------------------------------------------\n"
              "gc_trigger_counter integer not null,\n"
              "--[ data ]-----------------------------------------------------------------\n"
@@ -430,8 +458,8 @@ namespace sql_generator {
         return s == NULL ? "null" : string(s);
     }
 
-    sql_val_t next_from_sequence() {
-        return "$next_id";
-    }
+//    sql_val_t next_from_sequence() {
+//        return "$next_id";
+//    }
 
 }
