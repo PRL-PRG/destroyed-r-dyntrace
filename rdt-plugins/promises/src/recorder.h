@@ -351,7 +351,7 @@ public:
         info.prom_type = static_cast<sexp_type>(TYPEOF(PRCODE(promise)));
         get_full_type(promise, rho, info.full_type);
 
-        info.expression = get_expression(PRCODE(prom));
+        info.expression = get_expression(PRCODE(promise));
 
         return info;
     }
