@@ -977,6 +977,78 @@ function(vigDeps)
         NA
 }
 
+### * .rdt.instrumentation.header
+### RDT helper function
+
+.rdt_instrumentation_header <- function(first, path)
+  paste(
+    ".RdtPlugins <- file.path(R.home(), 'rdt-plugins');\n",
+    "Rdt(tracer='promises',\n",
+    "output='d',\n", 
+    "path='", path, "',\n", 
+    "format='psql',\n",
+    "pretty.print=FALSE,\n",
+    "overwrite=", first, ",\n", 
+    "synthetic.call.id=TRUE,\n", 
+    "include.configuration=TRUE,\n",
+    "reload.state=", !first, ",\n",
+    "block={\n\n",
+    sep="")
+
+### * .rdt.instrumentation.footer
+### RDT helper function
+
+.rdt_instrumentation_footer <- function()
+  paste("\n\n})\n",
+  sep = "")
+
+.rdt_execute <- function(output) {
+  rdt.compile <- Sys.getenv("RDT_CHECK_COMPILE", "true")
+  rdt.dry.run <- Sys.getenv("RDT_DRY_RUN", "false")
+  rdt.output.dir <- Sys.getenv("RDT_CHECK_OUTPUT_DIR", paste(getwd(), "tracer", sep="/"))
+  wd.output <- paste(getwd(), output, sep="/")
+  
+  if (!dir.exists(rdt.output.dir))
+    dir.create(rdt.output.dir)
+  
+  rdt.output.path <- paste(rdt.output.dir, "/", basename(tools::file_path_sans_ext(output)), ".rdt.R", sep="")
+  rdt.backup.path <- paste(rdt.output.dir, "/", basename(output), sep="")
+  rdt.output.db <- paste(rdt.output.dir, "/", basename(tools::file_path_sans_ext(output)), ".sqlite", sep="")
+  
+  write(paste("   output dir:            ", rdt.output.dir, sep=""), stderr())
+  write(paste("   output db:             ", rdt.output.db, sep=""), stderr())
+  
+  rdt.vignette.code <- readLines(wd.output)
+  rdt.instrumented.vignette.code <- c(
+    .rdt_instrumentation_header(TRUE, rdt.output.db), 
+    rdt.vignette.code, 
+    .rdt_instrumentation_footer())
+  
+  write(paste("   original vignette:     ", output, sep=""), stderr())
+  write(paste("   wd + original vign.:   ", wd.output, sep=""), stderr())
+  write(paste("   backup vignette:       ", rdt.backup.path, sep=""), stderr())
+  write(paste("   instrumented vignette: ", rdt.output.path, sep=""), stderr())
+  
+  if(!file.exists(rdt.output.path))
+    file.create(rdt.output.path)
+  file.copy(wd.output, rdt.backup.path)
+  
+  print(rdt.instrumented.vignette.code)
+  
+  write(rdt.instrumented.vignette.code, rdt.output.path, append=FALSE)
+  
+  if (rdt.compile == "true") {
+    rdt.compiled.output.path <- paste(tools::file_path_sans_ext(rdt.output.path), "Rc", sep=".")
+    compiler:::cmpfile(rdt.output.path, rdt.compiled.output.path)
+    write(paste("   compiled to:           ", rdt.compiled.output.path, sep=""), stderr())
+    write(paste("   loading:               ", rdt.compiled.output.path, sep=""), stderr()) # tools::file_path_as_absolute
+    compiler:::loadcmp(rdt.compiled.output.path)
+  } else {
+    write(paste("   executing:             ", rdt.compiled.output.path, sep=""), stderr())
+    source(rdt.output.path, echo = TRUE)
+  }
+}
+
 ### * .run_one_vignette
 ### helper for R CMD check
 
@@ -1010,6 +1082,8 @@ function(vig_name, docDir, encoding = "", pkgdir)
     name <- vigns$names[i]
     engine <- vignetteEngine(vigns$engines[i])
 
+    cat("Tangling:", file, "\n")
+    
     output <- tryCatch({
         engine$tangle(file, quiet = TRUE, encoding = encoding)
         find_vignette_product(name, by = "tangle", engine = engine)
@@ -1017,10 +1091,15 @@ function(vig_name, docDir, encoding = "", pkgdir)
         cat("\n  When tangling ", sQuote(file), ":\n", sep="")
         stop(conditionMessage(e), call. = FALSE, domain = NA)
     })
+    
+    cat("Tangled: ", getwd(), "/", output, "\n", sep="")
+    print(scan(paste(getwd(), output, sep="/"), as.character()))
+    file.copy(getwd(), "/tmp/cantdeletethis/", recursive = TRUE)
 
     if(length(output) == 1L) {
         tryCatch({
-            source(output, echo = TRUE)
+            #source(output, echo = TRUE) 
+          .rdt_execute(output)
         }, error = function(e) {
             cat("\n  When sourcing ", sQuote(output), ":\n", sep="")
             stop(conditionMessage(e), call. = FALSE, domain = NA)

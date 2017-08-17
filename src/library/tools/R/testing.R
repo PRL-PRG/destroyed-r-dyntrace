@@ -462,6 +462,7 @@ testInstalledPackage <-
         if(!is.null(Log))
             cat("  Running ", sQuote(f), sep = "", file = Log)
         outfile <- sub("rout$", "Rout", paste0(f, "out"))
+        ## RDT
         cmd <- paste(shQuote(file.path(R.home("bin"), "R")),
                      "CMD BATCH --vanilla",
                      if(use_valgrind) "--debugger=valgrind",
