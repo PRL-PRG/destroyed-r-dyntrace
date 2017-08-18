@@ -3210,7 +3210,8 @@ setRlibs <-
                                    basename(file), "', '", vigns$dir, "'",
                                    if (nzchar(enc))
                                        paste0(", encoding = '", enc, "'"),
-                                   ", pkgdir='", vigns$pkgdir, "')")
+                                   ", pkgdir='", vigns$pkgdir, 
+                                   "', pkgname='", pkgname ,"')")
                     outfile <- paste0(basename(file), ".log")
                     t1b <- proc.time()
                     status <- R_runR(Rcmd,

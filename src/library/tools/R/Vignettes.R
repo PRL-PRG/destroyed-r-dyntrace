@@ -1002,18 +1002,18 @@ function(vigDeps)
   paste("\n\n})\n",
   sep = "")
 
-.rdt_execute <- function(output) {
+.rdt_execute <- function(name, output) {
   rdt.compile <- Sys.getenv("RDT_CHECK_COMPILE", "true")
   rdt.dry.run <- Sys.getenv("RDT_DRY_RUN", "false")
   rdt.output.dir <- Sys.getenv("RDT_CHECK_OUTPUT_DIR", paste(getwd(), "tracer", sep="/"))
   wd.output <- paste(getwd(), output, sep="/")
   
   if (!dir.exists(rdt.output.dir))
-    dir.create(rdt.output.dir)
+    dir.create(rdt.output.dir, recursive = TRUE)
   
-  rdt.output.path <- paste(rdt.output.dir, "/", basename(tools::file_path_sans_ext(output)), ".rdt.R", sep="")
-  rdt.backup.path <- paste(rdt.output.dir, "/", basename(output), sep="")
-  rdt.output.db <- paste(rdt.output.dir, "/", basename(tools::file_path_sans_ext(output)), ".sqlite", sep="")
+  rdt.output.path <- paste(rdt.output.dir, "/", name , "_", basename(tools::file_path_sans_ext(output)), ".rdt.R", sep="")
+  rdt.backup.path <- paste(rdt.output.dir, "/", name , "_", basename(output), sep="")
+  rdt.output.db <- paste(rdt.output.dir, "/", name , "_", basename(tools::file_path_sans_ext(output)), ".sqlite", sep="")
   
   write(paste("   output dir:            ", rdt.output.dir, sep=""), stderr())
   write(paste("   output db:             ", rdt.output.db, sep=""), stderr())
@@ -1053,7 +1053,7 @@ function(vigDeps)
 ### helper for R CMD check
 
 .run_one_vignette <-
-function(vig_name, docDir, encoding = "", pkgdir)
+function(vig_name, docDir, encoding = "", pkgdir, pkgname)
 {
     ## The idea about encodings here is that Stangle reads the
     ## file, converts on read and outputs in the current encoding.
@@ -1083,9 +1083,12 @@ function(vig_name, docDir, encoding = "", pkgdir)
     engine <- vignetteEngine(vigns$engines[i])
 
     cat("Tangling:", file, "\n")
+    cat("encoding:", encoding, "\n")
+    print(engine)
     
     output <- tryCatch({
-        engine$tangle(file, quiet = TRUE, encoding = encoding)
+        x<-engine$tangle(file, quiet = TRUE, encoding = encoding)
+        cat("demioutput:", x, "\n")
         find_vignette_product(name, by = "tangle", engine = engine)
     }, error = function(e) {
         cat("\n  When tangling ", sQuote(file), ":\n", sep="")
@@ -1099,7 +1102,7 @@ function(vig_name, docDir, encoding = "", pkgdir)
     if(length(output) == 1L) {
         tryCatch({
             #source(output, echo = TRUE) 
-          .rdt_execute(output)
+          .rdt_execute(pkgname, output)
         }, error = function(e) {
             cat("\n  When sourcing ", sQuote(output), ":\n", sep="")
             stop(conditionMessage(e), call. = FALSE, domain = NA)
