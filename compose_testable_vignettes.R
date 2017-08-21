@@ -11,7 +11,7 @@ suppressPackageStartupMessages(library("compiler"))
 #sys.env <- as.character(c("R_KEEP_PKG_SOURCE=yes", "R_ENABLE_JIT=0"))
 
 option_list <- list( 
-  make_option(c("-c", "--command"), action="store", type="character", default="~/workspace/R-dyntrace/bin/R CMD BATCH",
+  make_option(c("-c", "--command"), action="store", type="character", default="/data/kondziu/R-dyntrace/bin/R CMD BATCH",
               help="Command to execute", metavar="command"),
   make_option(c("-o", "--output-dir"), action="store", type="character", default="data",
               help="Output dirctory for results (*.sqlite, etc) [default].", metavar="output_dir"),
@@ -36,16 +36,6 @@ dir.create(log.dir, showWarnings = TRUE)
 
 rdt.cmd.head <- function(first, path)
   paste(
-    "loadNamespace <- function(package, lib.loc = NULL,\n",
-    "                          keep.source = getOption('keep.source.pkgs'),\n",
-    "                          partial = FALSE, declarativeOnly = FALSE) {\n",
-    "    tryCatch(base::loadNamespace(package, lib.loc, keep.source, partial, declarativeOnly),\n",
-    "        error = function(e) {\n",
-    "            install.packages(package, repos='https://cloud.r-project.org/')\n",
-    "            base::loadNamespace(package, lib.loc, keep.source, partial, declarativeOnly)\n",
-    "        })\n",
-    "}\n\n",
-    "gcinfo(verbose = TRUE)\n",
     "Rdt(tracer='promises',\n",
     "output='d',\n", 
     "path='", path, "',\n", 
@@ -59,7 +49,6 @@ rdt.cmd.head <- function(first, path)
     sep="")
 
 rdt.cmd.tail <- paste("\n\n})\n",
-                      "gcinfo(verbose = FALSE)\n",
                       sep = "")
 
 instrument.vignettes <- function(packages) {
