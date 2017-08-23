@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+#!/data/kondziu/R-dyntrace/bin/Rscript
 
 compiler::setCompilerOptions(suppressAll = TRUE)
 
@@ -26,9 +26,9 @@ option_list <- list(
               help="Report document output directory (default is same as --template)", metavar="output_path"),
   make_option(c("--compile"), action="store_true", default=FALSE,
               help="compile Rmd files [default]", metavar="compile"),
-  make_option(c("--engine"), action="store", default="/home/kondziu/workspace/R-dyntrace/reports/functions.R",
+  make_option(c("--engine"), action="store", default="/data/kondziu/R-dyntrace/reports/functions.R",
               help="path to functions.R file [default]", metavar="engine"),
-  make_option(c("--template"), action="store", default="/home/kondziu/workspace/R-dyntrace/reports/template.Rmd",
+  make_option(c("--template"), action="store", default="/data/kondziu/R-dyntrace/reports/template.Rmd",
               help="path to an Rmd template file [default]", metavar="template")
 )
 
