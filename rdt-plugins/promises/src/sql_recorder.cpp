@@ -37,6 +37,36 @@ sql_stmt_t insert_function_statement(const call_info_t & info) {
     );
 }
 
+vector<sql_stmt_t> insert_arguments_statements(const closure_info_t & info, bool align, size_t block_size) {
+    assert(info.arguments.size() > 0);
+
+    vector<sql_val_cell_t> value_cells;
+    sql_val_t call_id = from_int(info.call_id);
+
+    int i = 0;
+    for (auto argument_ref : info.arguments.all()) {
+        const arg_t &argument = argument_ref.get();
+        sql_val_t argument_name = wrap_nullable_string(get<0>(argument));
+        sql_val_t argument_id = from_int(get<1>(argument));
+        sql_val_t index = from_int(i++);
+
+        sql_val_cell_t cell = join({argument_id, argument_name, index, call_id});
+        value_cells.push_back(cell);
+    }
+
+    vector<vector<sql_val_cell_t>> value_cell_vectors = tools::split_vector(value_cells, block_size);
+    vector<sql_stmt_t> result;
+
+    for (auto value_cell_vector : value_cell_vectors) {
+        result.push_back(make_insert_arguments_statement(
+                value_cell_vector,
+                align
+        ));
+    }
+
+    return result;
+}
+
 sql_stmt_t insert_arguments_statement(const closure_info_t & info, bool align) {
     assert(info.arguments.size() > 0);
 
@@ -130,6 +160,37 @@ sql_stmt_t insert_promise_association_statement(const closure_info_t & info, boo
     );
 }
 
+vector<sql_stmt_t> insert_promise_association_statements(const closure_info_t & info, bool align, size_t block_size) {
+    assert(info.arguments.size() > 0);
+
+    vector<sql_val_cell_t> value_cells;
+    sql_val_t call_id = from_int(info.call_id);
+
+    int i = 0;
+    for (auto argument_ref : info.arguments.all()) {
+        const arg_t &argument = argument_ref.get();
+        //sql_val_t argument_name = get<0>(argument);
+        sql_val_t argument_id = from_int(get<1>(argument));
+        sql_val_t promise_id = from_int(get<2>(argument));
+        sql_val_t index = from_int(i++);
+
+        sql_val_cell_t cell = join({promise_id, call_id, argument_id});
+        value_cells.push_back(cell);
+    }
+
+    vector<vector<sql_val_cell_t>> value_cell_vectors = tools::split_vector(value_cells, block_size);
+    vector<sql_stmt_t> result;
+
+    for (auto value_cell_vector : value_cell_vectors) {
+        result.push_back(make_insert_promise_associations_statement(
+                value_cell_vector,
+                align
+        ));
+    }
+
+    return result;
+}
+
 sql_stmt_t insert_promise_evaluation_statement(prom_eval_t type, const prom_info_t & info) {
     sql_val_t clock = from_int(STATE(clock_id)++);
     sql_val_t event_type = from_int(type);
@@ -188,6 +249,31 @@ sql_stmt_t insert_promise_lifecycle_statement(const prom_gc_info_t & info) {
     );
 }
 
+sql_stmt_t insert_gc_trigger_statement(const gc_info_t & info) {
+    sql_val_t counter = from_int(info.counter);
+    sql_val_t ncells = from_int(info.ncells);
+    sql_val_t vcells = from_int(info.vcells);
+
+    return make_insert_gc_trigger_statement(
+            counter,
+            ncells,
+            vcells
+    );
+}
+
+sql_stmt_t insert_type_distribution_statement(const type_gc_info_t & info) {
+    sql_val_t gc_trigger_counter = from_int(info.gc_trigger_counter);
+    sql_val_t type = from_int(info.type);
+    sql_val_t length = from_long(info.length);
+    sql_val_t bytes = from_long(info.bytes);
+
+    return make_insert_type_distribution_statement(
+            gc_trigger_counter,
+            type,
+            length,
+            bytes);
+}
+
 /* Functions connecting to the outside world, create SQL and multiplex output. */
 
 void sql_recorder_t::function_entry(const closure_info_t & info) {
@@ -201,11 +287,21 @@ void sql_recorder_t::function_entry(const closure_info_t & info) {
                 tracer_conf.outputs);
     }
 
-    if (info.arguments.size() > 0) {
+    if (info.arguments.size() > 0 && info.arguments.size() < 500) {
         sql_stmt_t statement = insert_arguments_statement(info, align_statements);
+
         multiplexer::output(
                 multiplexer::payload_t(statement),
                 tracer_conf.outputs);
+
+    } else if (info.arguments.size() >= 500) {
+        vector<sql_stmt_t> statements = insert_arguments_statements(info, align_statements, 500);
+
+        for (auto statement : statements) {
+            multiplexer::output(
+                    multiplexer::payload_t(statement),
+                    tracer_conf.outputs);
+        }
     }
 
     /* always */ {
@@ -215,11 +311,21 @@ void sql_recorder_t::function_entry(const closure_info_t & info) {
                 tracer_conf.outputs);
     }
 
-    if (info.arguments.size() > 0) {
+    if (info.arguments.size() > 0 && info.arguments.size() < 500) {
         sql_stmt_t statement = insert_promise_association_statement(info, align_statements);
+
         multiplexer::output(
                 multiplexer::payload_t(statement),
                 tracer_conf.outputs);
+
+    } else if (info.arguments.size() >= 500) {
+        vector<sql_stmt_t> statements = insert_promise_association_statements(info, align_statements, 500);
+
+        for (auto statement : statements) {
+            multiplexer::output(
+                    multiplexer::payload_t(statement),
+                    tracer_conf.outputs);
+        }
     }
 }
 
@@ -295,6 +401,28 @@ void sql_recorder_t::promise_lifecycle(const prom_gc_info_t & info) {
     multiplexer::output(
             multiplexer::payload_t(statement),
             tracer_conf.outputs);
+}
+
+void sql_recorder_t::gc_exit(const gc_info_t & info) {
+#ifdef RDT_SQLITE_SUPPORT
+    sql_stmt_t statement = insert_gc_trigger_statement(info);
+    multiplexer::output(
+            multiplexer::payload_t(statement),
+            tracer_conf.outputs);
+#else
+    // FIXME
+#endif
+}
+
+void sql_recorder_t::vector_alloc(const type_gc_info_t & info) {
+#ifdef RDT_SQLITE_SUPPORT
+    sql_stmt_t statement = insert_type_distribution_statement(info);
+    multiplexer::output(
+            multiplexer::payload_t(statement),
+            tracer_conf.outputs);
+#else
+    // FIXME
+#endif
 }
 
 void sql_recorder_t::start_trace(const metadata_t & info) { // bool output_configuration

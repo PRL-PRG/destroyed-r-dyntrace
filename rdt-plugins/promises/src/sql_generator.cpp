@@ -17,6 +17,7 @@ using namespace std;
 namespace sql_generator {
 
     inline sql_stmt_t make_multirow_insert_statement(string table, vector<string> &values, bool align);
+    inline vector<sql_stmt_t> make_multirow_insert_statements(string table, vector<string> &values, bool align);
 
     sql_stmt_t make_insert_function_statement(sql_val_t id, sql_val_t location, sql_val_t definition, sql_val_t type,
                                               sql_val_t compiled) {
@@ -470,6 +471,10 @@ namespace sql_generator {
 
     sql_val_t from_int(int i) {
         return to_string(i);
+    }
+
+    sql_val_t from_long(long l) {
+        return to_string(l);
     }
 
     sql_val_t from_hex(int h) {
