@@ -1,3 +1,4 @@
+#!/data/kondziu/R-dyntrace/bin/Rscript
 #!/usr/bin/Rscript
 
 suppressPackageStartupMessages(library(dplyr))
@@ -30,6 +31,7 @@ select_sample <- function (sample_size=NA, criterion=FILTER_ALL, sample_arrangem
   first = TRUE
   
   # Get information per vignette
+  write("Get information per vignette", stderr())
   for(package in all_packages) {
     vignettes <- vignette(package = package)$results
     
@@ -54,6 +56,7 @@ select_sample <- function (sample_size=NA, criterion=FILTER_ALL, sample_arrangem
   }
   
   # Aggregate vignettes to get package information
+  write("Aggregate vignettes to get package information", stderr())
   package_information <- 
     tibble(package=all_packages) %>% left_join(result.vignettes, by="package") %>% 
     group_by(package) %>% summarise(
@@ -61,6 +64,7 @@ select_sample <- function (sample_size=NA, criterion=FILTER_ALL, sample_arrangem
       n.lines=sum(ifelse(is.na(lines), 0, lines)))
   
   # Filter by type
+  write("Filter by type", stderr())
   filtered_package_information <- if (criterion==FILTER_ALL) {
     package_information
   } else if (criterion == FILTER_VIGNETTES) {
@@ -72,6 +76,7 @@ select_sample <- function (sample_size=NA, criterion=FILTER_ALL, sample_arrangem
   } %>% as.data.frame
   
   # Figure out the dataset size vis-avis the sample size and adjust
+  write("Figure out the dataset size vis-avis the sample size and adjust", stderr())	
   dataset_size <- nrow(filtered_package_information)
   
   if (is.na(sample_size)) {
@@ -82,6 +87,7 @@ select_sample <- function (sample_size=NA, criterion=FILTER_ALL, sample_arrangem
   }
   
   # Sampling
+  write("Sampling", stderr())
   a_sample <- if(sample_arrangement == SAMPLE_RANDOM) {
     sample_vector <- sample(x = dataset_size, size = sample_size)
     filtered_package_information[sample_vector,]
@@ -126,15 +132,19 @@ suppressWarnings(
 cfg <- parse_args(OptionParser(option_list=option_list), positional_arguments=TRUE)
 
 # Select the sample
+write("Select the sample", stderr())
 selected_sample <- select_sample(
   sample_size = cfg$options$`sample-size`,
   sample_arrangement = cfg$options$`sample-arrangement`,
   criterion = cfg$options$`pre-sample-filter`
 )
 
-# Prepare printable version:
+# Prepare printable version
+write("Prepare printable version", stderr())
 printable_sample <- 
   selected_sample %>% 
   mutate(summary=paste(package, n.vignettes, n.lines, sep=";")) %>% 
   pull(summary)
+
+write("Write", stderr())
 write(printable_sample, stdout())
