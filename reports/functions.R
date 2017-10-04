@@ -1245,6 +1245,12 @@ get_cascading_promises_histogram <- function (cutoff=NA) {
   }
 }
 
+log_line_to_csv <- function(where, ...) {
+  what <- data.frame(...)
+  header <- !file.exists(where)
+  write.table(what, file=where, sep=",", append=TRUE, col.names=header, row.names=FALSE)
+}
+
 
 # get_cascading_promises_evaluation_histogram <- function(cutoff=NA, include.toplevel=TRUE) {
 #   basic <- 
