@@ -1,4 +1,7 @@
 #!/usr/bin/Rscript
+#!/data/kondziu/R-dyntrace/bin/Rscript
+#!/usr/bin/Rscript
+#!/home/kondziu/workspace/R-dyntrace/bin/Rscript
 
 compiler::setCompilerOptions(suppressAll = TRUE)
 
@@ -6,11 +9,14 @@ suppressPackageStartupMessages(library("optparse"))
 suppressPackageStartupMessages(library("dplyr"))
 suppressPackageStartupMessages(library("stringr"))
 suppressPackageStartupMessages(library("rmarkdown"))
+suppressPackageStartupMessages(library("hashmap"))
 
 Sys.setenv(RSTUDIO_PANDOC="/usr/lib/rstudio/bin/pandoc")
 
-PATH_TO_TEMPLATE="data/kondziu/R-dyntrace/reports/template.Rmd"
+PATH_TO_TEMPLATE="/data/kondziu/R-dyntrace/reports/template.Rmd"
 PATH_TO_ENGINE="/data/kondziu/R-dyntrace/reports/functions.R"
+#PATH_TO_TEMPLATE="/home/kondziu/workspace/R-dyntrace/reports/template.Rmd"
+#PATH_TO_ENGINE="/home/kondziu/workspace/R-dyntrace/reports/functions.R"
 
 option_list <- list( 
   make_option(c("-a", "--author"), action="store", type="character", default="",
@@ -43,11 +49,22 @@ if (cfg$options$`output-path` == "") {
   cfg$options$`output-path` <- dirname(cfg$options$template)
 }
 
+logs_path <- file.path(cfg$options$`output-path`, "aggregate")
+print(logs_path)
+if (!dir.exists(logs_path)) {
+  dir.create(logs_path, recursive=TRUE)
+} 
+# else {
+#   list.files(logs_path, full.names = TRUE) %>% 
+#     list %>%
+#     do.call(file.remove, .)
+# }
+
 make_metadata_line <- function(key, value, comment=NULL, quote=FALSE) 
   paste(key, 
         ": ", 
         if (quote) '"' else "", 
-        if(is.null(comment)) value else paste(value, " (", comment, ")", sep=""), 
+        if(is.null(comment)) value else if (comment == "") value else paste(value, " (", comment, ")", sep=""), 
         if (quote) '"' else "",
         sep="")
 make_metadata_segment <- function(...) paste("---", ..., "---\n", sep="\n")
@@ -62,6 +79,7 @@ for (argument in cfg$args){
   if (cfg$options$debug)
     print(output_path)
   
+  print(package_name)
   metadata <- make_metadata_segment(make_metadata_line("title", package_name, cfg$options$comment, quote=TRUE),
                                     make_metadata_line("author", cfg$options$author, quote=TRUE),
                                     make_metadata_line("date", cfg$options$date, quote=TRUE),
@@ -72,8 +90,10 @@ for (argument in cfg$args){
   
   markdown <- 
     readLines(cfg$options$template) %>% paste(collapse="\n") %>% 
+    str_replace_all("%%NAME%%", package_name) %>% 
     str_replace_all("%%PATH%%", argument) %>% 
-    str_replace_all("%%FUNCTIONS%%", cfg$options$engine)
+    str_replace_all("%%FUNCTIONS%%", cfg$options$engine) %>%
+    str_replace_all("%%LOGS%%", logs_path)
   
   content <- paste(metadata, markdown, sep="\n")
   
