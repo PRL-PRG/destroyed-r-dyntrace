@@ -21,7 +21,7 @@ name <- "%%NAME%%"
 aggregate_data <- "%%LOGS%%"
 if (!dir.exists(aggregate_data))
   dir.create(aggregate_data)
-store <- function(table) function(...) log_line_to_csv(file.path(aggregate_data, paste(table, "csv", sep=".")), name=name, ...)
+store <- function(table) function(...) suppressWarnings(log_line_to_csv(file.path(aggregate_data, paste(table, "csv", sep=".")), name=name, ...))
 
 ```
 
@@ -154,7 +154,7 @@ store("promise_types")(promise.types)
 
 <!--div class="together"-->
 ``` {r promise-full-types-pie, echo=FALSE, fig.width=5, fig.height=4.5, comment=""}
-promise.full.types <- get_full_promise_types(cutoff=1)
+promise.full.types <- get_full_promise_types(cutoff=NA)
 
 slices <- (promise.full.types %>% arrange(number))$number
 labels <- (promise.full.types %>% arrange(number) %>% mutate(type = ifelse(percent>1, type, "")))$type
@@ -189,6 +189,7 @@ store("return_types")(return.types)
 ```
 </div>
 
+<!--
 ``` {r promise-bcode-return-types-pie, echo=FALSE, comment="", fig.width=5, fig.height=4.5}
 return.types <- get_promise_return_types_by_type(cutoff=NA, promise_type="BCODE")
 
@@ -201,6 +202,21 @@ pie(slices, labels, main="Return types for BCODE")
 if(print_data) print(return.types %>% as.data.frame %>% transform(number=pp(number), percent=pp(percent)), row.names=FALSE)
 
 store("return_types_for_BCODE")(return.types)
+```
+-->`
+
+``` {r promise-types-to-return-types-pie, echo=FALSE, comment="", fig.width=5, fig.height=4.5}
+types.to.return.types <- get_promise_types_to_return_types(cutoff=NA)
+
+slices <- (types.to.return.types %>% arrange(number))$number
+labels <- (types.to.return.types %>% arrange(number) %>% mutate(types = ifelse(percent>1, types, "")))$types
+par(mar=c(0,2,2,2))
+
+pie(slices, labels, main="Promise code → return types")
+
+if(print_data) print(types.to.return.types %>% as.data.frame %>% transform(number=pp(number), percent=pp(percent)), row.names=FALSE)
+
+store("promise_code_to_return_types")(types.to.return.types)
 ```
 
 </div>
@@ -307,7 +323,7 @@ store("effective_distances")(histogram_with_labels)
 ```
 </div>
 -->
-
+<center>
 <!--div class="together"-->
 ``` {r actual-distances, echo=FALSE, fig.width=14, fig.height=5, comment=""}
 cutoff <- 20
@@ -329,6 +345,7 @@ store("actual_distances")(histogram_with_labels)
 ```
 <!--/div-->
 <!--/div-->
+</center>
 
 ## Functions and Calls
 
@@ -623,7 +640,7 @@ store("evaluation_order")(promise.force.order.histogram_with_labels)
 ### Calls to specific functions
 
 ```{r function-calls-selected-counts, echo=FALSE, comment=""}
-specific.calls <- get_function_calls("^<anonymous>$", "eval", "force", "delayAssign", "return", "<-", "assign", "print") 
+specific.calls <- get_function_calls("^<anonymous>$", "eval", "force", "delayAssign", "return", "<-", "assign", "print") %>% select(function_name, number, percent)
 
 print(specific.calls %>% data.frame %>% transform(number=pp(number), percent=pp(percent)), row.names=FALSE)
 

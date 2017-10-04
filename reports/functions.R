@@ -84,12 +84,12 @@ get_effective_distances <- function(cutoff=NA) {
       max.distance <- cutoff
    
     below <- 
-      effective.distances %>% filter(effective_distance_from_origin <= cutoff) %>%
+      effective.distances %>% filter(is.na(effective_distance_from_origin) || effective_distance_from_origin <= cutoff) %>%
       collect %>% ungroup %>%
       mutate(effective_distance_from_origin = effective_distance_from_origin)
     
     above <- 
-      effective.distances %>% filter(effective_distance_from_origin > cutoff) %>% 
+      effective.distances %>% filter(!is.na(effective_distance_from_origin)) %>% filter(effective_distance_from_origin > cutoff) %>% 
       collect %>% ungroup %>% 
       summarise(
         effective_distance_from_origin=Inf, 
@@ -132,12 +132,12 @@ get_actual_distances <- function(cutoff=NA) {
       max.distance <- cutoff
     
     below <- 
-      actual.distances %>% filter(actual_distance_from_origin <= cutoff) %>%
+      actual.distances %>% filter(is.na(actual_distance_from_origin) || actual_distance_from_origin <= cutoff)  %>%
       collect %>% ungroup %>%
       mutate(actual_distance_from_origin = actual_distance_from_origin)
     
     above <- 
-      actual.distances %>% filter(actual_distance_from_origin > cutoff) %>% 
+      actual.distances %>% filter(!is.na(actual_distance_from_origin)) %>% filter(actual_distance_from_origin > cutoff) %>% 
       collect %>% ungroup %>% 
       summarise(
         actual_distance_from_origin=Inf, 
@@ -206,6 +206,26 @@ get_promise_return_types <- function(cutoff=NA) {
   } else {
     above <- result %>% filter(percent >= cutoff)
     below <- result %>% filter(percent < cutoff) %>% summarise(type="other", number=sum(number), percent=sum(percent))  
+    rbind(above, below)
+  }
+}
+
+get_promise_types_to_return_types <- function(cutoff=NA) {
+  result <- 
+    promises %>% rename(promise_id=id) %>% select(promise_id, type) %>% left_join(promise_returns %>% rename(return_type = type), by="promise_id") %>%
+    do(mutate(., type_resolution = paste(humanize_promise_type(type), humanize_promise_type(return_type), sep="→"))) %>%
+    group_by(type_resolution) %>% count(type_resolution) %>% 
+    mutate(percent=((n*100/n.promises))) %>%
+    rename(number=n, types=type_resolution) %>%
+    select(types, number, percent) %>%
+    data.frame %>%   
+    arrange(desc(number))
+  
+  if (is.na(cutoff)) {
+    result
+  } else {
+    above <- result %>% filter(percent >= cutoff)
+    below <- result %>% filter(percent < cutoff) %>% summarise(types="other", number=sum(number), percent=sum(percent))  
     rbind(above, below)
   }
 }
@@ -344,7 +364,7 @@ get_force_histogram <- function(cutoff=NA) {
 }
 
 get_fuzzy_force_histogram <- function() {
-  renamer = hashmap(0:4, c("forced more than once", "forced once and read", "only forced once", "never forced but read", "never forced, not read"))
+  renamer = hashmap(0:4, c("evaluated 2+ times, forced 2+ times", "evaluated 2+ times, forced once", "evaluated once, forced once", "evaluated 1+ times, never forced", "never evaluated"))
   promises %>% rename(promise_id = id) %>% 
   left_join(promise_evaluations, by ="promise_id") %>% 
   group_by(promise_id) %>% 
@@ -353,11 +373,11 @@ get_fuzzy_force_histogram <- function() {
     forced = ifelse(is.na(event_type), 0, sum(as.integer(event_type == 15))), 
     looked_up = ifelse(is.na(event_type), 0, sum(as.integer(event_type == 0)))) %>% 
   mutate(classification =
-              ifelse((forced > 1),                    0,               # forced more than once
-              ifelse((forced == 1 && looked_up > 0),  1,               # forced once and read
-              ifelse((forced == 1 && looked_up ==0 ), 2,               # forced exactly once
-              ifelse((forced == 0 && looked_up > 0),  3,               # not forced but read
-              ifelse((forced == 0 && looked_up == 0), 4, NA)))))) %>%  # not forced, not read
+              ifelse((forced > 1),                    0,               # evaluated 2+ times, forced 2+ times
+              ifelse((forced == 1 && looked_up > 0),  1,               # evaluated 2+ times, forced once
+              ifelse((forced == 1 && looked_up ==0 ), 2,               # evaluated once, forced once
+              ifelse((forced == 0 && looked_up > 0),  3,               # evaluated 1+ times, never forced
+              ifelse((forced == 0 && looked_up == 0), 4, NA)))))) %>%  # never evaluated
   group_by(classification) %>% 
   summarise(number=n()) %>% as.data.frame %>%
   mutate(percent=(100*number/n.promises)) %>% 
