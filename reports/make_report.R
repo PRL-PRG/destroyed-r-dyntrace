@@ -1,4 +1,4 @@
-#!/data/kondziu/R-dyntrace/bin/Rscript
+#!/usr/bin/Rscript
 
 compiler::setCompilerOptions(suppressAll = TRUE)
 

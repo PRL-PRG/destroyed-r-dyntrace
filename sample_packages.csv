@@ -14,12 +14,10 @@ EBglmnet;1;107
 EpiBayes;3;353
 hierband;1;30
 synthpop;1;67
-cellWise;1;248
 labelrank;1;11
 randomNames;1;15
 clusterhap;1;7
 lightsout;1;30
-CINNA;1;26
 knitr;9;133
 survRM2;1;39
 Rearrangement;1;66
@@ -44,7 +42,6 @@ gamlss.spatial;1;140
 doBy;2;268
 limSolve;2;152
 MfUSampler;1;157
-tlm;1;87
 BMS;1;62
 grattan;4;908
 cheddar;5;861
