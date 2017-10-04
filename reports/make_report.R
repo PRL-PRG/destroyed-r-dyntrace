@@ -1,8 +1,6 @@
-#!/usr/bin/Rscript
-
-#!/home/kondziu/workspace/R-dyntrace/bin/Rscript
 #!/data/kondziu/R-dyntrace/bin/Rscript
-
+#!/usr/bin/Rscript
+#!/home/kondziu/workspace/R-dyntrace/bin/Rscript
 
 compiler::setCompilerOptions(suppressAll = TRUE)
 
@@ -16,9 +14,8 @@ Sys.setenv(RSTUDIO_PANDOC="/usr/lib/rstudio/bin/pandoc")
 
 PATH_TO_TEMPLATE="/data/kondziu/R-dyntrace/reports/template.Rmd"
 PATH_TO_ENGINE="/data/kondziu/R-dyntrace/reports/functions.R"
-
-PATH_TO_TEMPLATE="/home/kondziu/workspace/R-dyntrace/reports/template.Rmd"
-PATH_TO_ENGINE="/home/kondziu/workspace/R-dyntrace/reports/functions.R"
+#PATH_TO_TEMPLATE="/home/kondziu/workspace/R-dyntrace/reports/template.Rmd"
+#PATH_TO_ENGINE="/home/kondziu/workspace/R-dyntrace/reports/functions.R"
 
 option_list <- list( 
   make_option(c("-a", "--author"), action="store", type="character", default="",
