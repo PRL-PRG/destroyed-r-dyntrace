@@ -1,0 +1,76 @@
+"name","classification","number","percent"
+"annotate","accessed 2+ times, forced 2+ times",0,0
+"annotate","accessed 2+ times, forced once",293174,16.1213852203497
+"annotate","accessed once, forced once",1136168,62.4768976888616
+"annotate","accessed 1+ times, never forced",14788,0.81317935641814
+"annotate","never accessed",374411,20.5885377343706
+"Biobase","accessed 2+ times, forced 2+ times",0,0
+"Biobase","accessed 2+ times, forced once",137531,16.0498307853892
+"Biobase","accessed once, forced once",518560,60.5158128136305
+"Biobase","accessed 1+ times, never forced",9126,1.06500175049597
+"Biobase","never accessed",191683,22.3693546504843
+"Biostrings","accessed 2+ times, forced 2+ times",0,0
+"Biostrings","accessed 2+ times, forced once",198501,15.1831375470598
+"Biostrings","accessed once, forced once",825454,63.138128376032
+"Biostrings","accessed 1+ times, never forced",12036,0.920621274030923
+"Biostrings","never accessed",271387,20.7581128028772
+"caschrono","accessed 2+ times, forced 2+ times",0,0
+"caschrono","accessed 2+ times, forced once",129428,14.8450609559573
+"caschrono","accessed once, forced once",556100,63.7832493556871
+"caschrono","accessed 1+ times, never forced",5890,0.675567953074981
+"caschrono","never accessed",180441,20.6961217352806
+"colorspace","accessed 2+ times, forced 2+ times",0,0
+"colorspace","accessed 2+ times, forced once",288101,16.9372741018749
+"colorspace","accessed once, forced once",1012906,59.5480979289683
+"colorspace","accessed 1+ times, never forced",5902,0.346974816988715
+"colorspace","never accessed",394079,23.167653152168
+"copula","accessed 2+ times, forced 2+ times",0,0
+"copula","accessed 2+ times, forced once",194364,12.6299701542194
+"copula","accessed once, forced once",1180403,76.7037859889233
+"copula","accessed 1+ times, never forced",18364,1.19331137408206
+"copula","never accessed",145780,9.47293248277516
+"dplyr","accessed 2+ times, forced 2+ times",0,0
+"dplyr","accessed 2+ times, forced once",176207,15.1203141330706
+"dplyr","accessed once, forced once",860429,73.8333708036788
+"dplyr","accessed 1+ times, never forced",7341,0.62993085434104
+"dplyr","never accessed",121389,10.4163842089095
+"ggplot2","accessed 2+ times, forced 2+ times",0,0
+"ggplot2","accessed 2+ times, forced once",47019,17.6789742818469
+"ggplot2","accessed once, forced once",165096,62.0755000751993
+"ggplot2","accessed 1+ times, never forced",5021,1.88787787637239
+"ggplot2","never accessed",48824,18.3576477665814
+"grid","accessed 2+ times, forced 2+ times",0,0
+"grid","accessed 2+ times, forced once",278067,16.43956368796
+"grid","accessed once, forced once",782908,46.2862041443732
+"grid","accessed 1+ times, never forced",12473,0.737414644240149
+"grid","never accessed",618002,36.5368175234266
+"lmtest","accessed 2+ times, forced 2+ times",0,0
+"lmtest","accessed 2+ times, forced once",22854,18.1692425109712
+"lmtest","accessed once, forced once",76775,61.0371748394072
+"lmtest","accessed 1+ times, never forced",979,0.778318387076258
+"lmtest","never accessed",25176,20.0152642625453
+"mvtnorm","accessed 2+ times, forced 2+ times",0,0
+"mvtnorm","accessed 2+ times, forced once",45192,19.9784265530229
+"mvtnorm","accessed once, forced once",129507,57.2523032307121
+"mvtnorm","accessed 1+ times, never forced",1390,0.614489575781153
+"mvtnorm","never accessed",50115,22.1547806404838
+"rivr","accessed 2+ times, forced 2+ times",0,0
+"rivr","accessed 2+ times, forced once",23256,20.0084314855761
+"rivr","accessed once, forced once",78244,67.317669124416
+"rivr","accessed 1+ times, never forced",3504,3.01468627130456
+"rivr","never accessed",11227,9.65921311870327
+"stringr","accessed 2+ times, forced 2+ times",0,0
+"stringr","accessed 2+ times, forced once",12924,17.4849489278225
+"stringr","accessed once, forced once",43498,58.8486775350064
+"stringr","accessed 1+ times, never forced",114,0.154231211526754
+"stringr","never accessed",17379,23.5121423256443
+"tm","accessed 2+ times, forced 2+ times",0,0
+"tm","accessed 2+ times, forced once",47835,15.8955647934922
+"tm","accessed once, forced once",213910,71.082267481466
+"tm","accessed 1+ times, never forced",2202,0.731724337310963
+"tm","never accessed",36986,12.2904433877308
+"vcd","accessed 2+ times, forced 2+ times",0,0
+"vcd","accessed 2+ times, forced once",0,0
+"vcd","accessed once, forced once",0,0
+"vcd","accessed 1+ times, never forced",0,0
+"vcd","never accessed",0,0

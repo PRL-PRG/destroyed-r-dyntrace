@@ -1,0 +1,51 @@
+"name","compiled","number","percent"
+"annotate","uncompiled",229,26.1415525114155
+"annotate","compiled",624,71.2328767123288
+"annotate","after 1st",21,2.3972602739726
+"annotate","erratic",2,0.228310502283105
+"Biobase","uncompiled",176,17.8318135764944
+"Biobase","compiled",787,79.7365754812563
+"Biobase","after 1st",21,2.12765957446809
+"Biobase","erratic",3,0.303951367781155
+"Biostrings","uncompiled",145,19.2563081009296
+"Biostrings","compiled",597,79.2828685258964
+"Biostrings","after 1st",9,1.19521912350598
+"Biostrings","erratic",2,0.265604249667995
+"caschrono","uncompiled",31,4.19485791610284
+"caschrono","compiled",703,95.128552097429
+"caschrono","after 1st",2,0.27063599458728
+"caschrono","erratic",3,0.40595399188092
+"colorspace","uncompiled",148,14.2307692307692
+"colorspace","compiled",865,83.1730769230769
+"colorspace","after 1st",20,1.92307692307692
+"colorspace","erratic",7,0.673076923076923
+"copula","uncompiled",22,3.16546762589928
+"copula","compiled",670,96.4028776978417
+"copula","after 1st",2,0.287769784172662
+"copula","erratic",1,0.143884892086331
+"dplyr","uncompiled",440,41.0830999066293
+"dplyr","compiled",604,56.3958916900093
+"dplyr","after 1st",24,2.24089635854342
+"dplyr","erratic",3,0.280112044817927
+"ggplot2","uncompiled",111,17.6190476190476
+"ggplot2","compiled",509,80.7936507936508
+"ggplot2","after 1st",8,1.26984126984127
+"ggplot2","erratic",2,0.317460317460317
+"grid","uncompiled",3,0.383631713554987
+"grid","compiled",776,99.23273657289
+"grid","after 1st",3,0.383631713554987
+"lmtest","uncompiled",17,2.83806343906511
+"lmtest","compiled",580,96.8280467445743
+"lmtest","after 1st",2,0.333889816360601
+"mvtnorm","uncompiled",27,5.52147239263804
+"mvtnorm","compiled",454,92.8425357873211
+"mvtnorm","after 1st",8,1.6359918200409
+"rivr","uncompiled",10,1.6750418760469
+"rivr","compiled",586,98.1574539363484
+"rivr","erratic",1,0.16750418760469
+"stringr","uncompiled",111,24.8322147651007
+"stringr","compiled",330,73.8255033557047
+"stringr","after 1st",5,1.11856823266219
+"stringr","erratic",1,0.223713646532438
+"tm","uncompiled",4,0.650406504065041
+"tm","compiled",611,99.349593495935

@@ -1,0 +1,15 @@
+"name","path","n.functions","n.calls","n.promises","n.promise.forces","n.promise.lookups","n.alien.promises","n.alien.promise.forces","n.alien.promise.lookups"
+"annotate","/home/kondziu/workspace/R-dyntrace/data/annotate.sqlite",1252,2178668,1818541,1429343,571656,163,163,NA
+"Biobase","/home/kondziu/workspace/R-dyntrace/data/Biobase.sqlite",1466,1053359,856900,656094,280879,232,232,NA
+"Biostrings","/home/kondziu/workspace/R-dyntrace/data/Biostrings.sqlite",1104,1446573,1307378,1023957,376882,125,125,NA
+"caschrono","/home/kondziu/workspace/R-dyntrace/data/caschrono.sqlite",1177,959810,871859,685530,256230,175,175,NA
+"colorspace","/home/kondziu/workspace/R-dyntrace/data/colorspace.sqlite",1620,2208883,1700988,1301008,660234,214,214,NA
+"copula","/home/kondziu/workspace/R-dyntrace/data/copula.sqlite",1181,2153517,1538911,1374774,463812,116,116,NA
+"dplyr","/home/kondziu/workspace/R-dyntrace/data/dplyr.sqlite",1481,1755765,1165366,1036641,341338,423,423,NA
+"ggplot2","/home/kondziu/workspace/R-dyntrace/data/ggplot2.sqlite",980,396956,265960,212117,106809,32,32,NA
+"grid","/home/kondziu/workspace/R-dyntrace/data/grid.sqlite",1170,1956938,1691450,1060988,1141077,74,74,NA
+"lmtest","/home/kondziu/workspace/R-dyntrace/data/lmtest.sqlite",978,173836,125784,99630,46469,141,141,NA
+"mvtnorm","/home/kondziu/workspace/R-dyntrace/data/mvtnorm.sqlite",870,316909,226204,174700,96106,103,103,NA
+"rivr","/home/kondziu/workspace/R-dyntrace/data/rivr.sqlite",894,139741,116231,101503,37859,166,166,NA
+"stringr","/home/kondziu/workspace/R-dyntrace/data/stringr.sqlite",698,97621,73915,56424,27807,85,85,NA
+"tm","/home/kondziu/workspace/R-dyntrace/data/tm.sqlite",929,376101,300933,261747,96020,67,67,NA
